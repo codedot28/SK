@@ -17,7 +17,7 @@
     </style>
   </head>
   <body>
-    <canvas id="gameCanvas" width="800" height="1200"></canvas>
+    <canvas id="gameCanvas" width="800" height="800"></canvas>
     <script>
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
@@ -25,7 +25,7 @@
       // 타일 크기 설정
       const TILE_SIZE = 60;
 
-      // 맵 데이터 배열 (0: 빈공간, 1: 잔디, 2: 회색블록, 3: 갈색블록, 4: 빨간팀, 5: 파란팀, 6: 중앙박스)
+      // 맵 데이터 배열 (0: 빈공간, 1: 잔디, 2: 회색블록, 3: 갈색블록, 4: 빨간팀, 5: 파란팀, 6: 중앙박스, 7: 빨간옷 사람, 8: 파란옷 사람)
       const mapData = [
         [0, 1, 0, 0, 4, 4, 4, 0, 0, 1, 0],
         [0, 0, 0, 0, 7, 0, 7, 1, 0, 0, 0],
@@ -47,25 +47,19 @@
             const posY = y * TILE_SIZE;
 
             // 기본 배경
-            ctx.fillStyle = "#FFC088"; // 살구색 배경
+            ctx.fillStyle = "#FFC088";
             ctx.fillRect(posX, posY, TILE_SIZE, TILE_SIZE);
 
             switch (tile) {
               case 1: // 잔디
-                // 기본 잔디 색상 배경
                 ctx.fillStyle = "#4CAF50";
                 ctx.fillRect(posX, posY, TILE_SIZE, TILE_SIZE);
-
-                // 잔디 패턴 추가
-                ctx.strokeStyle = "#388E3C"; // 더 어두운 녹색
+                ctx.strokeStyle = "#388E3C";
                 ctx.lineWidth = 8;
-
-                // 격자 형태로 짧은 선들을 그림
                 for (let i = 0; i < 3; i++) {
                   for (let j = 0; j < 3; j++) {
                     const x = posX + (TILE_SIZE / 3) * i + 10;
                     const y = posY + (TILE_SIZE / 3) * j + 10;
-
                     ctx.beginPath();
                     ctx.moveTo(x, y);
                     ctx.lineTo(x, y + 5);
@@ -74,49 +68,33 @@
                 }
                 break;
               case 2: // 회색 블록
-                // 기본 회색 배경
                 ctx.fillStyle = "#9E9E9E";
                 ctx.fillRect(posX, posY, TILE_SIZE, TILE_SIZE);
-
-                // X자 그리기
-                ctx.strokeStyle = "#757575"; // 더 어두운 회색
+                ctx.strokeStyle = "#757575";
                 ctx.lineWidth = 4;
-
-                // 왼쪽 상단에서 오른쪽 하단으로
                 ctx.beginPath();
                 ctx.moveTo(posX + 10, posY + 10);
                 ctx.lineTo(posX + TILE_SIZE - 10, posY + TILE_SIZE - 10);
                 ctx.stroke();
-
-                // 오른쪽 상단에서 왼쪽 하단으로
                 ctx.beginPath();
                 ctx.moveTo(posX + TILE_SIZE - 10, posY + 10);
                 ctx.lineTo(posX + 10, posY + TILE_SIZE - 10);
                 ctx.stroke();
                 break;
-              case 3: // 갈색 블록 (나무)
-                // 기본 나무 색상 배경
+              case 3: // 갈색 블록
                 ctx.fillStyle = "#8D6E63";
                 ctx.fillRect(posX, posY, TILE_SIZE, TILE_SIZE);
-
-                // 나무 결 패턴
-                ctx.strokeStyle = "#6D4C41"; // 더 어두운 갈색
+                ctx.strokeStyle = "#6D4C41";
                 ctx.lineWidth = 3;
-
-                // 세로 방향 나무 결 그리기
                 for (let i = 1; i <= 3; i++) {
                   const x = posX + (TILE_SIZE / 4) * i;
-
                   ctx.beginPath();
                   ctx.moveTo(x, posY + 5);
                   ctx.lineTo(x, posY + TILE_SIZE - 5);
                   ctx.stroke();
                 }
-
-                // 가로 방향 마디 그리기 (2개)
                 for (let i = 1; i <= 2; i++) {
                   const y = posY + (TILE_SIZE / 3) * i;
-
                   ctx.beginPath();
                   ctx.moveTo(posX + 5, y);
                   ctx.lineTo(posX + TILE_SIZE - 5, y);
@@ -163,16 +141,13 @@
                 );
                 break;
               case 7: // 빨간옷 사람
-                // 몸통
-                ctx.fillStyle = "#F44336"; // 빨간색
+                ctx.fillStyle = "#F44336";
                 ctx.fillRect(
                   posX + TILE_SIZE / 4,
                   posY + TILE_SIZE / 3,
                   TILE_SIZE / 2,
                   TILE_SIZE / 2
                 );
-
-                // 머리
                 ctx.beginPath();
                 ctx.arc(
                   posX + TILE_SIZE / 2,
@@ -181,21 +156,17 @@
                   0,
                   Math.PI * 2
                 );
-                ctx.fillStyle = "#FFE0B2"; // 살색
+                ctx.fillStyle = "#FFE0B2";
                 ctx.fill();
                 break;
-
               case 8: // 파란옷 사람
-                // 몸통
-                ctx.fillStyle = "#2196F3"; // 파란색
+                ctx.fillStyle = "#2196F3";
                 ctx.fillRect(
                   posX + TILE_SIZE / 4,
                   posY + TILE_SIZE / 3,
                   TILE_SIZE / 2,
                   TILE_SIZE / 2
                 );
-
-                // 머리
                 ctx.beginPath();
                 ctx.arc(
                   posX + TILE_SIZE / 2,
@@ -204,7 +175,7 @@
                   0,
                   Math.PI * 2
                 );
-                ctx.fillStyle = "#FFE0B2"; // 살색
+                ctx.fillStyle = "#FFE0B2";
                 ctx.fill();
                 break;
             }
@@ -212,87 +183,121 @@
         });
       }
 
-      // 플레이어 위치 추적을 위한 변수 추가
-      const players = {
-        red: { x: 0, y: 0 },
-        blue: { x: 0, y: 0 },
-      };
+      const redPlayers = [];
+      const bluePlayer = { x: 0, y: 0 };
 
-      // 초기 플레이어 위치 찾기
-      function findPlayers() {
+      // 타일 상태 기억
+      const originalTiles = Array(mapData.length).fill().map(() => Array(mapData[0].length).fill(0));
+
+      // 초기 타일 상태 저장
+      function saveOriginalTiles() {
         mapData.forEach((row, y) => {
           row.forEach((tile, x) => {
-            if (tile === 7) players.red = { x, y };
-            if (tile === 8) players.blue = { x, y };
+            if (tile !== 7 && tile !== 8) {  // 캐릭터가 아닌 타일만 저장
+              originalTiles[y][x] = tile;
+            }
           });
         });
       }
 
-      // 플레이어 이동 함수
-      function movePlayer(player, dx, dy) {
-        const p = player === "red" ? players.red : players.blue;
-        const tileType = player === "red" ? 7 : 8;
+      // 초기 플레이어 위치 
+      function findPlayers() {
+        mapData.forEach((row, y) => {
+          row.forEach((tile, x) => {
+            if (tile === 7) {
+              redPlayers.push({ x, y });
+            } else if (tile === 8) {
+              bluePlayer.x = x;
+              bluePlayer.y = y;
+            }
+          });
+        });
+      }
 
-        const newX = p.x + dx;
-        const newY = p.y + dy;
+      // 빨간옷 사람 이동 함수
+      function moveRedPlayer(playerIndex, dx, dy) {
+        const player = redPlayers[playerIndex];
+        const newX = player.x + dx;
+        const newY = player.y + dy;
 
         // 맵 범위 체크
-        if (
-          newX < 0 ||
-          newX >= mapData[0].length ||
-          newY < 0 ||
-          newY >= mapData.length
-        )
+        if (newX < 0 || newX >= mapData[0].length || newY < 0 || newY >= mapData.length) {
           return;
-
-        // 이동 가능한 타일인지 체크 (0은 빈 공간)
-        if (mapData[newY][newX] === 0) {
-          mapData[p.y][p.x] = 0; // 이전 위치를 비움
-          mapData[newY][newX] = tileType; // 새 위치로 이동
-          p.x = newX;
-          p.y = newY;
-          drawMap(); // 맵 다시 그리기
         }
+
+        // 이동 가능한 타일인지 체크 (0: 빈공간, 1: 잔디)
+        if (mapData[newY][newX] === 0 || mapData[newY][newX] === 1) {
+          // 이전 위치를 원래 타일로 복원
+          mapData[player.y][player.x] = originalTiles[player.y][player.x];
+          // 새 위치에 플레이어 배치
+          mapData[newY][newX] = 7;
+          player.x = newX;
+          player.y = newY;
+          drawMap();
+        }
+      }
+
+      // 파란옷 사람 이동 함수
+      function moveBluePlayer(dx, dy) {
+        const newX = bluePlayer.x + dx;
+        const newY = bluePlayer.y + dy;
+
+        // 맵 범위 체크
+        if (newX < 0 || newX >= mapData[0].length || newY < 0 || newY >= mapData.length) {
+          return;
+        }
+
+        // 이동 가능한 타일인지 체크 (0: 빈공간, 1: 잔디)
+        if (mapData[newY][newX] === 0 || mapData[newY][newX] === 1) {
+          // 이전 위치를 원래 타일로 복원
+          mapData[bluePlayer.y][bluePlayer.x] = originalTiles[bluePlayer.y][bluePlayer.x];
+          // 새 위치에 플레이어 배치
+          mapData[newY][newX] = 8;
+          bluePlayer.x = newX;
+          bluePlayer.y = newY;
+          drawMap();
+        }
+      }
+
+      // 빨간옷 사람들 자동 이동 함수
+      function moveRedPlayersRandomly() {
+        const directions = [
+          { dx: -1, dy: 0 },  // 왼쪽
+          { dx: 1, dy: 0 },   // 오른쪽
+          { dx: 0, dy: -1 },  // 위
+          { dx: 0, dy: 1 }    // 아래
+        ];
+        
+        redPlayers.forEach((_, index) => {
+          const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+          moveRedPlayer(index, randomDirection.dx, randomDirection.dy);
+        });
       }
 
       // 키보드 이벤트 처리
       document.addEventListener("keydown", (e) => {
         switch (e.key) {
-          // 빨간 플레이어 (WASD)
-          case "w":
-            movePlayer("red", 0, -1);
-            break;
-          case "s":
-            movePlayer("red", 0, 1);
-            break;
-          case "a":
-            movePlayer("red", -1, 0);
-            break;
-          case "d":
-            movePlayer("red", 1, 0);
-            break;
-
-          // 파란 플레이어 (화살표키)
-          case "ArrowUp":
-            movePlayer("blue", 0, -1);
-            break;
-          case "ArrowDown":
-            movePlayer("blue", 0, 1);
-            break;
           case "ArrowLeft":
-            movePlayer("blue", -1, 0);
+            moveBluePlayer(-1, 0);
             break;
           case "ArrowRight":
-            movePlayer("blue", 1, 0);
+            moveBluePlayer(1, 0);
+            break;
+          case "ArrowUp":
+            moveBluePlayer(0, -1);
+            break;
+          case "ArrowDown":
+            moveBluePlayer(0, 1);
             break;
         }
-        ㅈ;
       });
 
-      // 초기 플레이어 위치 찾기
-      findPlayers();
+      // 1초마다 빨간옷 사람들 자동 이동
+      setInterval(moveRedPlayersRandomly, 1000);
 
-      // 맵 그리기
+      // 게임 초기화
+      saveOriginalTiles();  // 초기 타일 상태 저장
+      findPlayers();
       drawMap();
     </script>
   </body>
